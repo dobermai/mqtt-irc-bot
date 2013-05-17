@@ -1,0 +1,123 @@
+== MQTTBot
+
+//:icons: awesome
+:source-highlighter: highlightjs
+
+:hivemq-url: http://www.hivemq.com
+:commons-configuration-url: http://commons.apache.org/proper/commons-configuration/
+:commons-configuration-properties-url: http://commons.apache.org/proper/commons-configuration/userguide/howto_basicfeatures.html
+
+MQTTBot is a IRC-to-MQTT and MQTT-to-IRC "bridge". MQTTBot (as you can guess from the name) is an IRC bot
+which is connected to a MQTT broker and can publish and subscribe to the broker. So you can forward the IRC messages to
+your favourite MQTT topics or you can post received MQTT messages to the IRC chat.
+
+=== Why would I want a IRC-MQTT bridge?
+
+Admit it, you always wanted to chat with your MQTT enabled devices in an IRC chat. Your devices are now able to chat
+with humans. Internet of Things just got real.
+
+=== Seriously?
+
+Perhaps. This bot was written out of curiosity (I have never written an IRC bot before) and fun. There are however some
+interesting use cases which can be implemented with that bot. You could for instance use this bot to bridge all messages
+of an IRC channel to a MQTT broker and your Arduino (which subscribes to the said broker) beeps whenever your name was
+mentioned in the IRC chat.
+
+Another interesting use case could be to send messages you (and hopefully all other people in the channel) care about
+to the IRC chat. It is recommended that you use a MQTT broker which implements a sophisticated security concept for
+topics to avoid abuse or spamming. {hivemq-url}[HiveMQ] offers such a functionality.
+
+
+== Structure
+
+The root mapping of IRC chats to MQTT topics is the following:
+
++$IRC_PREFIX/$IRC_ROOM+
+
+Example: +$IRC_PREFIX+ is _mqttbot/irc_. The room we connect to is _#superawesometest_. The root topic for this room
+would be:
+
++mqttbot/irc/#superawesometest+
+
+The following subtopics under +$IRC_PREFIX/$IRC_ROOM+ are available:
+
+
+.Subtopics
+[cols="2,10"]
+[frame="topbot",grid="none"]
+|====
+|+messages+ |all messages of the IRC room are published to this topic
+|+messages/$NICKNAME+ |all messages of the user with the nickname are published to this topic
+|+users+ |everytime the users in the chatroom change, a retained message with all currently connected users is published
+|+topic+ |everytime the topic of the IRC room changes a retained message is published
+|====
+
+== Packaging
+
+Just run
+
+[source, bash]
+----
+mvn package
+----
+
+to generate a executable jar file.
+
+== Preparation & Starting MQTTBot
+
+.Steps before starting MQTTBot
+. Create a +config.properties+ file and place in directory of MQTTBot.
+. Double check if MQTT and IRC properties are correct
+. Start MQTTBot with +java -jar XXX.jar+ (where XXX is the name of the MQTTBot artifact
+
+.Properties file
+CAUTION: Before starting MQTTBot the first time, be sure to place a +config.properties+ file in the same directory where the jar
+file of MQTTBot is located. See xref:config[the configuration documentation] for a list of all allowed properties.
+
+[[config]]
+== Configuration
+
+MQTTBot uses {commons-configuration-url}[Apache Commons Configuration] under the hood, which allows
+{commons-configuration-properties-url}[sane property file handling], including the usage of lists and variable interpolation.
+
+=== Properties
+
+All available properties are listed below:
+[options="header"]
+.MQTT Properties
+|===
+|Property |Default Value |Description
+|broker.host |broker.mqttdashboard.com |The hostname or IP of the MQTT message broker
+|broker.port |1883 |The port of the MQTT broker
+|mqtt.keepAlive |60 |The MQTT keepalive interval in seconds
+|mqtt.clientId |mqtt-bot |The MQTT clientId.
+|mqtt.cleanSession |true |If the bot should connect to the broker with a clean session
+|mqtt.username | |The MQTT username. Defaults to no username.
+|mqtt.password | |The MQTT password. Defaults to no password.
+|mqtt.topicPrefix |irc |The MQTT topic prefix when publishing.
+
+|===
+
+TIP: You should at least change the MQTT clientId.
+
+[options="header"]
+.IRC Properties
+|===
+|Property |Default Value |Description
+|irc.hostname |irc.freenode.net |The hostname of the IRC server.
+|irc.port |6667 |The port of the IRC server
+|irc.nickName |mqtt_bot |Nickname of the Bot in IRC rooms
+|irc.channels |#mqttbottest, #secondmqttbottest | A list of channels the Bot should connect to.
+
+|===
+
+=== Example properties file
+
+[source, xml]
+----
+TODO!!!
+----
+
+
+
+
