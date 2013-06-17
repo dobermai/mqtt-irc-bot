@@ -39,8 +39,6 @@ public class IRCProperties {
         //Governator does not allow property lists out of the box. See https://github.com/Netflix/governator/issues/74
 
         ircChannels = Splitter.on(",").omitEmptyStrings().trimResults().split(ircChannelsRawString);
-
-
     }
 
 
