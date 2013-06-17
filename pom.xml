@@ -8,7 +8,37 @@
     <artifactId>mqtt-irc-bot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <inceptionYear>2013</inceptionYear>
     <description>A MQTT to IRC / IRC to MQTT bridge or bot. Call it what you like</description>
+
+
+    <developers>
+        <developer>
+            <id>dobermai</id>
+            <name>Dominik Obermaier</name>
+            <email>dominik.obermaier@gmail.com</email>
+            <url>http://www.forkbomb-blog.de</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/dobermai/mqtt-irc-bot/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/dobermai/mqtt-irc-bot</url>
+    </scm>
+
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
 
     <properties>
         <slf4j.version>1.7.5</slf4j.version>
