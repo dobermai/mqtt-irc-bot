@@ -30,6 +30,10 @@ topics to avoid abuse or spamming. {hivemq-url}[HiveMQ] offers such a functional
 
 == Structure
 
+=== IRC to MQTT
+
+The IRC Bot publishes all messages from IRC channels to MQTT topics.
+
 The root mapping of IRC chats to MQTT topics is the following:
 
 +$IRC_PREFIX/$IRC_ROOM+
@@ -51,6 +55,20 @@ The following subtopics under +$IRC_PREFIX/$IRC_ROOM+ are available:
 |+users+ |everytime the users in the chatroom change, a retained message with all currently connected users is published
 |+topic+ |everytime the topic of the IRC room changes a retained message is published
 |====
+
+
+=== MQTT to IRC
+
+It is possible to publish messages to a specific IRC channel via MQTT. To send a message to an IRC chat with MQTT, publish to:
+
++$IRC_PREFIX/$IRC_ROOM+
+
+Example: +$IRC_PREFIX+ is _mqttbot/irc_. The room we connect to is _#superawesometest_. To publish to this channel, publish to +mqttbot/irc/#superawesometest+
+
+
+
+.DO.NOT.ABUSE
+CAUTION: This features *MUST NOT* be abused for spamming IRC channels. You will most likely be banned faster than you think when doing this. Drop your black hat and put on your yellow smiley-face hat.
 
 == Packaging
 
