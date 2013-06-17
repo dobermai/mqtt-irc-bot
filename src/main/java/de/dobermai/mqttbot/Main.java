@@ -1,12 +1,16 @@
 package de.dobermai.mqttbot;
 
 import com.google.inject.Injector;
-import com.netflix.governator.configuration.ArchaiusConfigurationProvider;
+import com.netflix.governator.configuration.PropertiesConfigurationProvider;
 import com.netflix.governator.guice.BootstrapBinder;
 import com.netflix.governator.guice.BootstrapModule;
 import com.netflix.governator.guice.LifecycleInjector;
 import com.netflix.governator.lifecycle.LifecycleManager;
 import de.dobermai.mqttbot.ioc.MqttBotModule;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.Properties;
 
 /**
  * @author Dominik Obermaier
@@ -20,7 +24,11 @@ public class Main {
                 .withBootstrapModule(new BootstrapModule() {
                     @Override
                     public void configure(BootstrapBinder binder) {
-                        binder.bindConfigurationProvider().to(ArchaiusConfigurationProvider.class);
+                        try {
+                            binder.bindConfigurationProvider().toInstance(getConfigurationProvider());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 })
                 .withModules(new MqttBotModule()).createInjector();
@@ -32,6 +40,20 @@ public class Main {
 
         instance.startAndWait();
 
+    }
+
+    private static PropertiesConfigurationProvider getConfigurationProvider() throws Exception {
+
+        final Properties properties = new Properties();
+        properties.load(new FileReader(new File(getExecutionPath(), "config.properties")));
+
+        return new PropertiesConfigurationProvider(properties);
+    }
+
+    private static File getExecutionPath() {
+        String absolutePath = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+        return new File(absolutePath);
     }
 
 }
