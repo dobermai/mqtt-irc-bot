@@ -4,7 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import de.dobermai.mqttbot.config.MQTTProperties;
 import org.fusesource.mqtt.client.CallbackConnection;
-import org.fusesource.mqtt.client.FutureConnection;
 import org.fusesource.mqtt.client.MQTT;
 
 import javax.inject.Singleton;
@@ -20,7 +19,7 @@ public class MqttBotModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public CallbackConnection provideMqttConnection(MQTTProperties mqttProperties) throws Exception {
+    public CallbackConnection provideMqttConnection(final MQTTProperties mqttProperties) throws Exception {
         MQTT mqtt = new MQTT();
         mqtt.setHost(mqttProperties.getBrokerHost(), mqttProperties.getBrokerPort());
         mqtt.setCleanSession(mqttProperties.isMqttcleanSession());

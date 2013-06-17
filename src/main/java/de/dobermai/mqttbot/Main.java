@@ -32,9 +32,6 @@ public class Main {
 
         instance.startAndWait();
 
-        System.out.println("Closing lifecycle Manager");
-        manager.close();
-
     }
 
 }
