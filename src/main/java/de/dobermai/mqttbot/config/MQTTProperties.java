@@ -2,12 +2,14 @@ package de.dobermai.mqttbot.config;
 
 import com.netflix.governator.annotations.Configuration;
 
+import javax.inject.Singleton;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 /**
  * @author Dominik Obermaier
  */
+@Singleton
 public class MQTTProperties {
 
     MQTTProperties() {

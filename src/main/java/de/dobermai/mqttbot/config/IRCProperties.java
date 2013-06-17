@@ -1,9 +1,13 @@
 package de.dobermai.mqttbot.config;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.netflix.governator.annotations.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
@@ -11,7 +15,10 @@ import java.util.ArrayList;
 /**
  * @author Dominik Obermaier
  */
+@Singleton
 public class IRCProperties {
+
+    private static final Logger log = LoggerFactory.getLogger(IRCProperties.class);
 
     IRCProperties() {
         //Do not instantiate manually!
@@ -29,7 +36,7 @@ public class IRCProperties {
     private String nickName = "mqtt_bot";
 
     @Configuration("irc.channels")
-    private String ircChannelsRawString;
+    private String ircChannelsRawString = "";
 
 
     private Iterable<String> ircChannels = new ArrayList<String>();
@@ -39,6 +46,10 @@ public class IRCProperties {
         //Governator does not allow property lists out of the box. See https://github.com/Netflix/governator/issues/74
 
         ircChannels = Splitter.on(",").omitEmptyStrings().trimResults().split(ircChannelsRawString);
+
+        if (Iterables.isEmpty(ircChannels)) {
+            log.warn("No IRC channels were set!");
+        }
     }
 
 
