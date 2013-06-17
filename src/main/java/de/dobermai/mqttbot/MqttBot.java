@@ -1,11 +1,14 @@
 package de.dobermai.mqttbot;
 
+import de.dobermai.mqttbot.config.IRCProperties;
+import de.dobermai.mqttbot.config.MQTTProperties;
 import org.fusesource.mqtt.client.FutureConnection;
 import org.fusesource.mqtt.client.QoS;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
 import javax.inject.Inject;
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -17,34 +20,36 @@ public class MqttBot extends PircBot {
 
 
     private final FutureConnection mqttConnection;
+    private final MQTTProperties mqttProperties;
 
     @Inject
-    public MqttBot(FutureConnection mqttConnection) throws Exception {
+    public MqttBot(final FutureConnection mqttConnection, final IRCProperties ircProperties, final MQTTProperties mqttProperties) throws Exception {
+        this.mqttProperties = mqttProperties;
 
-        setName("MQTT Bot Name");
+        setName(ircProperties.getNickName());
         this.mqttConnection = mqttConnection;
     }
 
 
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-        try {
-            mqttConnection.publish("irc/" + channel + "/messages", (sender + ": " + message).getBytes(UTF_8), QoS.AT_MOST_ONCE, false);
-            mqttConnection.publish("irc/" + channel + "/users/" + sender, (sender + ": " + message).getBytes(UTF_8), QoS.AT_MOST_ONCE, false);
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        final String messageTopic = MessageFormat.format("{0}/{1}/messages", mqttProperties.getMqttTopicPrefix(), channel);
+        final String userMessage = MessageFormat.format("{0}/{1}/users/{2}", mqttProperties.getMqttTopicPrefix(), channel, sender);
+        mqttConnection.publish(messageTopic, (sender + ": " + message).getBytes(UTF_8), QoS.AT_MOST_ONCE, false);
+        mqttConnection.publish(userMessage, (sender + ": " + message).getBytes(UTF_8), QoS.AT_MOST_ONCE, false);
     }
 
     @Override
     protected void onUserList(String channel, User[] users) {
 
         //FIXME: We should publish user lists periodically or if someone joins or leaves the channel
-        mqttConnection.publish("irc/" + channel + "/users", (Arrays.toString(users)).getBytes(UTF_8), QoS.AT_MOST_ONCE, true);
+        final String usersTopic = MessageFormat.format("{0}/{1}/users", mqttProperties.getMqttTopicPrefix(), channel);
+        mqttConnection.publish(usersTopic, (Arrays.toString(users)).getBytes(UTF_8), QoS.AT_MOST_ONCE, true);
     }
 
     @Override
     protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        mqttConnection.publish("irc/" + channel + "/topic", topic.getBytes(UTF_8), QoS.AT_MOST_ONCE, true);
+        final String onTopicChangeTopic = MessageFormat.format("{0}/{1}/topic", mqttProperties.getMqttTopicPrefix(), channel);
+        mqttConnection.publish(onTopicChangeTopic, topic.getBytes(UTF_8), QoS.AT_MOST_ONCE, true);
     }
 }
