@@ -2,7 +2,8 @@ package de.dobermai.mqttbot;
 
 import com.google.common.util.concurrent.AbstractIdleService;
 import de.dobermai.mqttbot.config.IRCProperties;
-import org.fusesource.mqtt.client.FutureConnection;
+import org.fusesource.mqtt.client.Callback;
+import org.fusesource.mqtt.client.CallbackConnection;
 
 import javax.inject.Inject;
 
@@ -11,12 +12,12 @@ import javax.inject.Inject;
  */
 public class BotController extends AbstractIdleService {
 
-    private final FutureConnection mqttConnection;
+    private final CallbackConnection mqttConnection;
     private final MqttBot bot;
     private final IRCProperties ircProperties;
 
     @Inject
-    public BotController(final FutureConnection mqttConnection, final MqttBot bot, final IRCProperties ircProperties) {
+    public BotController(final CallbackConnection mqttConnection, final MqttBot bot, final IRCProperties ircProperties) {
         this.mqttConnection = mqttConnection;
         this.bot = bot;
         this.ircProperties = ircProperties;
@@ -27,7 +28,17 @@ public class BotController extends AbstractIdleService {
         addShutdownHooks();
 
         System.out.println("Connecting to MQTT Broker");
-        mqttConnection.connect().await();
+        mqttConnection.connect(new Callback<Void>() {
+            @Override
+            public void onSuccess(Void value) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onFailure(Throwable value) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
 
         System.out.println("Connecting to IRC");
         bot.connect(ircProperties.getIrcHostName(), ircProperties.getPort());
@@ -36,7 +47,6 @@ public class BotController extends AbstractIdleService {
             bot.joinChannel(channel);
 
         }
-        bot.sendMessage("#flapflup", "hallo!");
         System.out.println("Connected to IRC");
 
     }
@@ -45,9 +55,17 @@ public class BotController extends AbstractIdleService {
     protected void shutDown() throws Exception {
 
         System.out.println("Disconnecting from MQTT broker");
-        if (mqttConnection.isConnected()) {
-            mqttConnection.disconnect().await();
-        }
+        mqttConnection.disconnect(new Callback<Void>() {
+            @Override
+            public void onSuccess(Void value) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onFailure(Throwable value) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
 
         System.out.println("Disconnecting from IRC");
         if (bot.isConnected()) {

@@ -3,6 +3,7 @@ package de.dobermai.mqttbot.ioc;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import de.dobermai.mqttbot.config.MQTTProperties;
+import org.fusesource.mqtt.client.CallbackConnection;
 import org.fusesource.mqtt.client.FutureConnection;
 import org.fusesource.mqtt.client.MQTT;
 
@@ -19,7 +20,7 @@ public class MqttBotModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public FutureConnection provideMqttConnection(MQTTProperties mqttProperties) throws Exception {
+    public CallbackConnection provideMqttConnection(MQTTProperties mqttProperties) throws Exception {
         MQTT mqtt = new MQTT();
         mqtt.setHost(mqttProperties.getBrokerHost(), mqttProperties.getBrokerPort());
         mqtt.setCleanSession(mqttProperties.isMqttcleanSession());
@@ -28,6 +29,6 @@ public class MqttBotModule extends AbstractModule {
         mqtt.setUserName(mqttProperties.getMqttUsername());
         mqtt.setPassword(mqttProperties.getMqttPassword());
 
-        return mqtt.futureConnection();
+        return mqtt.callbackConnection();
     }
 }
