@@ -8,6 +8,8 @@
     <artifactId>mqtt-irc-bot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <description>A MQTT to IRC / IRC to MQTT bridge or bot. Call it what you like</description>
+
     <properties>
         <slf4j.version>1.7.5</slf4j.version>
         <guice.version>3.0</guice.version>

@@ -137,5 +137,13 @@ TODO!!!
 ----
 
 
+== TODOs
+
+This is not um.. production ready yet. There are still many things to do
+
+* Unit tests are completely missing.
+* MQTT and IRC reconnecting is not implemented yet
+
+
 
 
