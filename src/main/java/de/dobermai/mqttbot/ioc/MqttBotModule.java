@@ -24,7 +24,7 @@ public class MqttBotModule extends AbstractModule {
         mqtt.setHost(mqttProperties.getBrokerHost(), mqttProperties.getBrokerPort());
         mqtt.setCleanSession(mqttProperties.isMqttcleanSession());
         mqtt.setClientId(mqttProperties.getMqttClientId());
-        mqtt.setKeepAlive(mqtt.getKeepAlive());
+        mqtt.setKeepAlive((short) mqttProperties.getMqttKeepAlive());
         mqtt.setUserName(mqttProperties.getMqttUsername());
         mqtt.setPassword(mqttProperties.getMqttPassword());
 
