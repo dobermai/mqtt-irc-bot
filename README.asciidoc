@@ -32,7 +32,7 @@ topics to avoid abuse or spamming. {hivemq-url}[HiveMQ] offers such a functional
 
 === IRC to MQTT
 
-The IRC Bot publishes all messages from IRC channels to MQTT topics.
+The IRC Bot publishes all messages from IRC channels to MQTT topics. Since the # character cannot be used in MQTT topic names, it is replaced by % in topic names by default.
 
 The root mapping of IRC chats to MQTT topics is the following:
 
@@ -41,7 +41,7 @@ The root mapping of IRC chats to MQTT topics is the following:
 Example: +$IRC_PREFIX+ is _mqttbot/irc_. The room we connect to is _#superawesometest_. The root topic for this room
 would be:
 
-+mqttbot/irc/#superawesometest+
++mqttbot/irc/%superawesometest+
 
 The following subtopics under +$IRC_PREFIX/$IRC_ROOM+ are available:
 
@@ -57,13 +57,14 @@ The following subtopics under +$IRC_PREFIX/$IRC_ROOM+ are available:
 |====
 
 
+
 === MQTT to IRC
 
-It is possible to publish messages to a specific IRC channel via MQTT. To send a message to an IRC chat with MQTT, publish to:
+It is possible to publish messages to a specific IRC channel via MQTT. Since the # character cannot be used in MQTT topic names, it is replaced by % in topic names by default. To send a message to an IRC chat with MQTT, publish to:
 
 +$IRC_PREFIX/$IRC_ROOM+
 
-Example: +$IRC_PREFIX+ is _mqttbot/irc_. The room we connect to is _#superawesometest_. To publish to this channel, publish to +mqttbot/irc/#superawesometest+
+Example: +$IRC_PREFIX+ is _mqttbot/irc_. The room we connect to is _#superawesometest_. To publish to this channel, publish to +mqttbot/irc/%superawesometest+
 
 
 
