@@ -59,6 +59,9 @@ public class MQTTProperties {
     @Configuration("mqtt.topicPrefix")
     private String mqttTopicPrefix = "irc";
 
+    @Configuration("mqtt.ircChannelPrefix")
+    private String mqttIrcChannelPrefix = "%";
+
     public String getBrokerHost() {
         return brokerHost;
     }
@@ -89,5 +92,9 @@ public class MQTTProperties {
 
     public String getMqttTopicPrefix() {
         return mqttTopicPrefix;
+    }
+
+    public String getMqttIrcChannelPrefix() {
+        return mqttIrcChannelPrefix;
     }
 }

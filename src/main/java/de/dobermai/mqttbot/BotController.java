@@ -74,7 +74,7 @@ public class BotController extends AbstractIdleService {
             @Override
             public void onPublish(UTF8Buffer topic, Buffer body, Runnable ack) {
 
-                final String channel = Iterables.getLast(Splitter.on("/").trimResults().split(topic.toString()));
+                final String channel = Iterables.getLast(Splitter.on("/").trimResults().split(topic.toString())).replace(mqttProperties.getMqttIrcChannelPrefix(),"#");
 
                 ack.run();
                 log.debug("Received message on topic {} with payload {}. Writing to IRC channel {}", topic.toString(), body.utf8().toString(), channel);
@@ -108,7 +108,7 @@ public class BotController extends AbstractIdleService {
             bot.joinChannel(channel);
             log.info("Joined channel {}", channel);
 
-            final String topic = MessageFormat.format("{0}/{1}", mqttProperties.getMqttTopicPrefix(), channel);
+            final String topic = replaceChannelPrefixes(MessageFormat.format("{0}/{1}", mqttProperties.getMqttTopicPrefix(), channel));
             log.info("Subscribing to MQTT topic {}", topic);
             mqttConnection.subscribe(new Topic[]{new Topic(topic, QoS.EXACTLY_ONCE)}, new Callback<byte[]>() {
                 @Override
@@ -167,5 +167,8 @@ public class BotController extends AbstractIdleService {
         }));
     }
 
+    private String replaceChannelPrefixes(final String channel) {
+        return channel.replace("#", mqttProperties.getMqttIrcChannelPrefix());
+    }
 
 }

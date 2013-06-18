@@ -55,8 +55,8 @@ public class MqttBot extends PircBot {
 
     @Override
     protected void onMessage(final String channel, final String sender, final String login, final String hostname, final String message) {
-        final String messageTopic = MessageFormat.format("{0}/{1}/messages", mqttProperties.getMqttTopicPrefix(), channel);
-        final String userMessage = MessageFormat.format("{0}/{1}/users/{2}", mqttProperties.getMqttTopicPrefix(), channel, sender);
+        final String messageTopic = replaceChannelPrefixes(MessageFormat.format("{0}/{1}/messages", mqttProperties.getMqttTopicPrefix(), channel));
+        final String userMessage = replaceChannelPrefixes(MessageFormat.format("{0}/{1}/users/{2}", mqttProperties.getMqttTopicPrefix(), channel, sender));
         mqttConnection.publish(messageTopic, (sender + ": " + message).getBytes(UTF_8), QoS.AT_MOST_ONCE, false, new Callback<Void>() {
             @Override
             public void onSuccess(Void value) {
@@ -85,7 +85,7 @@ public class MqttBot extends PircBot {
     protected void onUserList(String channel, User[] users) {
 
         //FIXME: We should publish user lists periodically or if someone joins or leaves the channel
-        final String usersTopic = MessageFormat.format("{0}/{1}/users", mqttProperties.getMqttTopicPrefix(), channel);
+        final String usersTopic = replaceChannelPrefixes(MessageFormat.format("{0}/{1}/users", mqttProperties.getMqttTopicPrefix(), channel));
         final String message = Arrays.toString(users);
         mqttConnection.publish(usersTopic, message.getBytes(UTF_8), QoS.AT_MOST_ONCE, true, new Callback<Void>() {
             @Override
@@ -102,7 +102,7 @@ public class MqttBot extends PircBot {
 
     @Override
     protected void onTopic(final String channel, final String topic, final String setBy, final long date, final boolean changed) {
-        final String onTopicChangeTopic = MessageFormat.format("{0}/{1}/topic", mqttProperties.getMqttTopicPrefix(), channel);
+        final String onTopicChangeTopic = replaceChannelPrefixes(MessageFormat.format("{0}/{1}/topic", mqttProperties.getMqttTopicPrefix(), channel));
         mqttConnection.publish(onTopicChangeTopic, topic.getBytes(UTF_8), QoS.AT_MOST_ONCE, true, new Callback<Void>() {
             @Override
             public void onSuccess(Void value) {
@@ -114,5 +114,9 @@ public class MqttBot extends PircBot {
                 log.error("An error occured while publishing:", value);
             }
         });
+    }
+
+    private String replaceChannelPrefixes(final String channel) {
+        return channel.replace("#", mqttProperties.getMqttIrcChannelPrefix());
     }
 }
