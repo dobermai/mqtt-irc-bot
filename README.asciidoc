@@ -114,7 +114,7 @@ All available properties are listed below:
 |mqtt.username | |The MQTT username. Defaults to no username.
 |mqtt.password | |The MQTT password. Defaults to no password.
 |mqtt.topicPrefix |irc |The MQTT topic prefix when publishing.
-|mqtt.ircChannelPrefix | The prefix of the "#" channel sign for irc chats on mqtt topics. Needed because # ist not a valid mqtt topic character
+|mqtt.ircChannelPrefix|%     |The prefix of the "#" channel sign for irc chats on mqtt topics. Needed because # ist not a valid mqtt topic character
 
 |===
 
